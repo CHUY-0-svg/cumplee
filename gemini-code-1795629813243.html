@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Feliz Cumpleaños! 🥐✨</title>
+    <!-- Tipografías cálidas y manuscritas de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-mesa: #f3eae0;
+            --papel: #fffdf9;
+            --tinta: #3d312a;
+            --tinta-suave: #6e5d53;
+            --acento-pan: #d97736;
+            --acento-suave: #f7e6d4;
+            --borde-papel: #e6d8c8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-mesa);
+            /* Textura sutil de puntitos tipo mantel/papel artesanal */
+            background-image: radial-gradient(#d8c7b6 1px, transparent 1px);
+            background-size: 24px 24px;
+            color: var(--tinta);
+            font-family: 'Lora', Georgia, serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 16px 80px;
+            overflow-x: hidden;
+        }
+
+        /* Pantalla inicial tipo sobre cerrado para activar el audio sin bloqueos del navegador */
+        #sobre-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(243, 234, 224, 0.96);
+            backdrop-filter: blur(6px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            text-align: center;
+            padding: 20px;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #sobre-overlay.oculto {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .sobre-card {
+            background: var(--papel);
+            border: 2px dashed var(--acento-pan);
+            border-radius: 20px;
+            padding: 36px 28px;
+            max-width: 400px;
+            box-shadow: 0 15px 35px rgba(61, 49, 42, 0.08);
+        }
+
+        .sobre-card h2 {
+            font-family: 'Caveat', cursive;
+            font-size: 2.5rem;
+            color: var(--acento-pan);
+            margin-bottom: 10px;
+        }
+
+        .sobre-card p {
+            font-size: 1rem;
+            color: var(--tinta-suave);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .btn-abrir {
+            background: var(--acento-pan);
+            color: #fff;
+            border: none;
+            padding: 14px 28px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+            box-shadow: 0 6px 16px rgba(217, 119, 54, 0.3);
+        }
+
+        .btn-abrir:hover {
+            transform: translateY(-2px);
+            background: #c26527;
+        }
+
+        /* Contenedor principal de la carta */
+        .contenedor {
+            max-width: 680px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        /* Reproductor de música estilo tarjetita */
+        .reproductor {
+            background: var(--papel);
+            border: 1px solid var(--borde-papel);
+            border-radius: 16px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            box-shadow: 0 6px 20px rgba(61, 49, 42, 0.05);
+        }
+
+        .reproductor-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .disco {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #3d312a, #6e5d53, #3d312a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .disco::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: var(--acento-pan);
+            border-radius: 50%;
+            border: 2px solid var(--papel);
+        }
+
+        .girando {
+            animation: girar 4s linear infinite;
+        }
+
+        @keyframes girar {
+            100% { transform: rotate(360deg); }
+        }
+
+        .cancion-titulo {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--tinta);
+        }
+
+        .cancion-sub {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.78rem;
+            color: var(--tinta-suave);
+        }
+
+        .btn-play {
+            background: var(--acento-suave);
+            color: var(--acento-pan);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-play:hover {
+            background: #edd4b9;
+        }
+
+        /* Hoja de carta */
+        .carta {
+            background: var(--papel);
+            border: 1px solid var(--borde-papel);
+            border-radius: 8px;
+            padding: 44px 40px;
+            box-shadow: 0 12px 30px rgba(61, 49, 42, 0.06);
+            position: relative;
+        }
+
+        /* Cinta adhesiva decorativa arriba */
+        .carta::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-1.5deg);
+            width: 110px;
+            height: 26px;
+            background: rgba(217, 119, 54, 0.22);
+            border-left: 1px dashed rgba(217, 119, 54, 0.4);
+            border-right: 1px dashed rgba(217, 119, 54, 0.4);
+        }
+
+        .fecha {
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            color: var(--tinta-suave);
+            text-align: right;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 3rem;
+            color: var(--acento-pan);
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        .cuerpo-carta p {
+            font-size: 1.08rem;
+            line-height: 1.85;
+            margin-bottom: 18px;
+            color: var(--tinta);
+        }
+
+        /* Polaroid del peluche panadero */
+        .polaroid-wrapper {
+            margin: 32px auto 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .polaroid {
+            background: #ffffff;
+            padding: 16px 16px 24px 16px;
+            border: 1px solid #e5ddd3;
+            border-radius: 4px;
+            box-shadow: 0 10px 25px rgba(61, 49, 42, 0.1);
+            max-width: 300px;
+            text-align: center;
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease;
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: auto;
+            border-radius: 2px;
+            display: block;
+            margin-bottom: 14px;
+            background: #fdfbf7;
+        }
+
+        .polaroid-caption {
+            font-family: 'Caveat', cursive;
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--tinta);
+            line-height: 1.2;
+        }
+
+        .firma {
+            margin-top: 28px;
+            font-family: 'Caveat', cursive;
+            font-size: 1.9rem;
+            color: var(--tinta);
+        }
+
+        /* Confeti sencillo y suave */
+        .confeti {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            top: -10px;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 99;
+            animation: caer linear forwards;
+        }
+
+        @keyframes caer {
+            to {
+                transform: translateY(105vh) rotate(540deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .carta {
+                padding: 32px 22px;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla de bienvenida para desbloquear el sonido automáticamente -->
+    <div id="sobre-overlay">
+        <div class="sobre-card">
+            <h2>Para ti 🫓🥐✨</h2>
+            <p>Un pequeño detalle. Sube un poquito el volumen antes de abrirlo.</p>
+            <button class="btn-abrir" onclick="abrirCarta()">Abrir carta</button>
+        </div>
+    </div>
+
+    <!-- Audio oculto (usa tu archivo mananitas.mp4 o mananitas.mp3) -->
+    <audio id="musica" loop>
+        <source src="mananitas.mp4" type="video/mp4">
+        <source src="audio.mpeg" type="audio/mpeg">
+    </audio>
+
+    <div class="contenedor">
+        <!-- Barra de música -->
+        <div class="reproductor">
+            <div class="reproductor-info">
+                <div class="disco" id="disco"></div>
+                <div>
+                    <div class="cancion-titulo">Cepillin te quiere decir algo</div>
+                    <div class="cancion-sub" id="estado-audio">Listo para sonar...</div>
+                </div>
+            </div>
+            <button class="btn-play" id="btn-play" onclick="toggleAudio()">Pausar</button>
+        </div>
+
+        <!-- Carta principal -->
+        <main class="carta">
+            <div class="fecha">Hoy, en tu día especial</div>
+            
+            <h1>¡Feliz cumpleaños! 🎂</h1>
+
+            <div class="cuerpo-carta">
+                <p>
+                    Wuenas le deseo que se la pase bien hoy y siempre, pero en especial hoy que es su cumple. 
+                </p>
+                <p>
+                    Deseo que le vaya bien en todos los aspectos, que tenga mucha salud y siempre cumpla todas sus metas y sueños en la vida, tanbien ya duermase más temprano, cuando valla caminando en la calle fijese porque creo que trae un iman de coches, tanbien ya no se desvele porque el sueño es vida, ah y ya no sea tan agresiva ni me haga bulling, igual gracias por todos los momentos y risas que hemos pasado, ...... y que siga cunmpliendo muchos más años. 
+                </p>
+                <p>
+                    Nunca pierdas esa esencia tan tuya ni las ganas con las que haces las cosas. Y le traje a un amigo:
+                </p>
+            </div>
+
+            <div class="polaroid-wrapper">
+                <figure class="polaroid">
+                    <img src="images.jfif" alt="Peluche panadero con moño naranja">
+                    <figcaption class="polaroid-caption">
+                        "Cuando vuelvas hacer pan y necesites ayuda"
+                    </figcaption>
+                </figure>
+            </div>
+
+            <div class="firma">
+                Portate bien y ya no seas agresiva,<br>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const audio = document.getElementById('musica');
+        const disco = document.getElementById('disco');
+        const btnPlay = document.getElementById('btn-play');
+        const estadoAudio = document.getElementById('estado-audio');
+
+        function abrirCarta() {
+            document.getElementById('sobre-overlay').classList.add('oculto');
+            reproducirAudio();
+            lanzarConfeti();
+        }
+
+        function reproducirAudio() {
+            audio.play().then(() => {
+                disco.classList.add('girando');
+                btnPlay.textContent = 'Pausar';
+                estadoAudio.textContent = 'Sonando ahora...';
+            }).catch(() => {
+                estadoAudio.textContent = 'Toca "Reproducir" para escuchar';
+                btnPlay.textContent = 'Reproducir';
+            });
+        }
+
+        function toggleAudio() {
+            if (audio.paused) {
+                reproducirAudio();
+            } else {
+                audio.pause();
+                disco.classList.remove('girando');
+                btnPlay.textContent = 'Reproducir';
+                estadoAudio.textContent = 'En pausa';
+            }
+        }
+
+        function lanzarConfeti() {
+            const colores = ['#d97736', '#f2b880', '#8c583a', '#e69d45', '#d9534f'];
+            for (let i = 0; i < 45; i++) {
+                const confeti = document.createElement('div');
+                confeti.classList.add('confeti');
+                confeti.style.left = Math.random() * 100 + 'vw';
+                confeti.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
+                confeti.style.animationDuration = (Math.random() * 2.5 + 2.5) + 's';
+                confeti.style.animationDelay = (Math.random() * 0.8) + 's';
+                document.body.appendChild(confeti);
+
+                setTimeout(() => confeti.remove(), 5500);
+            }
+        }
+    </script>
+</body>
+</html>
